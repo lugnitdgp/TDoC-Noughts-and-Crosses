@@ -2,7 +2,7 @@ import socket
 import sys
 
 s=socket.socket()
-s.connect(("IP ADD",10000))
+s.connect(("gethostname()",10000))
 print('''--enter msg only after'>' 
          --enter quit to exit !''')
 try:
