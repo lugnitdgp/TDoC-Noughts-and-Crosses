@@ -2,7 +2,7 @@ import socket
 import sys
 
 s=socket.socket()
-s.connect(("gethostname()",3456))
+s.connect((gethostname(),3456))
 print('enter a message, write quit for exit !')
 
 try:
