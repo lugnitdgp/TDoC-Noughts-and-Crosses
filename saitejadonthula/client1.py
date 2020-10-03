@@ -2,7 +2,7 @@ import socket
 import sys
 
 s=socket.socket()
-s.connect(("192.168.137.1",3456))
+s.connect(("IP ADD",3456))
 print('enter a message, write quit for exit !')
 
 try:
