@@ -21,9 +21,9 @@ def create_client():
 def communicate():
     global CLIENT
     while True:
-        outgoing_msg = input('Type "PING" to get a response> ')
+        outgoing_msg = input('Type your message here(press <Enter> to quit) > ')
         CLIENT.send(bytes(outgoing_msg, 'utf-8'))
-        if outgoing_msg == 'QUIT':
+        if outgoing_msg is '':
             break
         incoming_msg = CLIENT.recv(BUFF_SIZE)
         print(incoming_msg.decode('utf-8'))
