@@ -1,64 +1,35 @@
-# import socket programming library 
-import socket 
 
-# import thread module 
+import socket
+import os
 from _thread import *
-import threading 
 
-print_lock = threading.Lock() 
+ServerSocket = socket.socket()
+host = '127.0.0.1'
+port = 1233
+ThreadCount = 0
+try:
+    ServerSocket.bind((host, port))
+except socket.error as e:
+    print(str(e))
 
-# thread function 
-def threaded(c): 
-	while True: 
-
-		# data received from client 
-		data = c.recv(1024) 
-		if not data: 
-			print('Bye') 
-			
-			# lock released on exit 
-			print_lock.release() 
-			break
+print('Waitiing for a Connection..')
+ServerSocket.listen(5)
 
 
-		# send back the same string to client 
-		c.send(data) 
+def threaded_client(connection):
+    connection.send(str.encode('Welcome to the Server\n'))
+    while True:
+        data = connection.recv(2048)
+        reply = 'Server Says: ' + data.decode('utf-8')
+        if not data:
+            break
+        connection.sendall(str.encode(reply))
+    connection.close()
 
-	# connection closed 
-	c.close() 
-
-
-def Main(): 
-	host = "" 
-
-	# reverse a port on your computer 
-	# in our case it is 5000 but it 
-	# can be anything 
-	port = 5000
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-	s.bind((host, port)) 
-	print("socket binded to port", port) 
-
-	# put the socket into listening mode 
-	s.listen(5) 
-	print("socket is listening") 
-
-	# a forever loop until client wants to exit 
-	while True: 
-
-		# establish connection with client 
-		c, addr = s.accept() 
-
-		# lock acquired by client 
-		print_lock.acquire() 
-		print('Connected to :', addr[0], ':', addr[1]) 
-
-		# Start a new thread and return its identifier 
-		start_new_thread(threaded, (c,)) 
-	s.close() 
-
-
-if __name__ == '__main__': 
-	Main() 
-
-
+while True:
+    Client, address = ServerSocket.accept()
+    print('Connected to: ' + address[0] + ':' + str(address[1]))
+    start_new_thread(threaded_client, (Client, ))
+    ThreadCount += 1
+    print('Thread Number: ' + str(ThreadCount))
+ServerSocket.close()
