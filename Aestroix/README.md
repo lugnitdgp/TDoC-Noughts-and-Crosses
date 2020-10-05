@@ -12,10 +12,12 @@ The code works like this:
 -> It may be noted the following validation rules:
 
 ==> The position entered should not be less than 1 or greater than 9 otherwise it will ask your response again
+
 ==> You can not enter the position which may be filled up earlier.
 
 
 -> You will need to install the 'emojis' module of python3 in order to run the files.
+
 -> Just use the command: "$ pip3 install emoji"
 
 That's it :)
