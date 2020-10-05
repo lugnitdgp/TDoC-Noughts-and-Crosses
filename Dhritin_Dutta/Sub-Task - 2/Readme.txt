@@ -1,0 +1,1 @@
+The server can accept connections from multiple clients. I've included only one client.py file. All clients who have a copy of this file will be able to connect to the server successfully.
