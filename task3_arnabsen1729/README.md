@@ -27,7 +27,7 @@ For the client and server script its simple socket programming.
 
 ### Sample
 
-[task3](./assets/task3.gif)
+![task3](./assets/task3.gif)
 
 
 ### Resources
