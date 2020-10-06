@@ -1,5 +1,3 @@
-# day2
- We had to do two task 
- 1. creating a echo client and server
- 2. Creating a multi-threaded sever
+# day3
+ We had to do two task make a CLI based TIC-TAC-TOE game using socket
  
