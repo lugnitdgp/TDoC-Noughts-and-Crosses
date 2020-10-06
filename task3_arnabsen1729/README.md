@@ -11,7 +11,7 @@ CLI based Tic Tac Toe with 2 players.
 Since, there are only two users, and no centralised server, the game logic will reside in each file. So I created a `TicTacToe` class. The class has the following methods:
 
 | METHODS | DESCRIPTION |
-|---|---|---|
+|---|---|
 |  `p1Move()` | Ask Player 1's move and will keep asking untill it gets a valid input |
 |  `p2Move()` | Ask Player 2's move and will keep asking untill it gets a valid input |
 | `find_winner()` | Will find the winner at the current state of the game and return the value |
