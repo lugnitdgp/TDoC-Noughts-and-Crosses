@@ -1,0 +1,89 @@
+import threading
+import numpy as np
+import socket
+global count
+count = 0
+board = {'1':' ','2':' ','3':' ','4':' ','5':' ','6':' ','7':' ','8':' ','9':' '}
+
+def print_board():
+    print('|'+board['1'] + '||' + board['2'] + '||' + board['3']+'|')
+    print('----------')
+    print('|'+board['4'] + '||' + board['5'] + '||' + board['6']+'|')
+    print('----------')
+    print('|'+board['7'] + '||' + board['8'] + '||' + board['9']+'|')
+
+def my_move(h):
+    global count
+    b = str(input())
+    count = count+1
+    h.sendall(str.encode(b))
+    board[b]='X'
+    print_board()
+
+def others_move(l):
+    global count
+    data = l.recv(1024)
+    recieve = data.decode('utf-8')
+    count = count+1
+    board[recieve] = 'O'
+    print_board()
+
+def check_win():
+    value = None
+    if board['1']==board['2'] and board['1']==board['3']:
+        value = board['1']
+    elif board['4']==board['5'] and board['4']==board['6']:
+        value = board['4']
+    elif board['7']==board['8'] and board['7']==board['9']:
+        value = board['7']
+    elif board['1']==board['5'] and board['1']==board['9']:
+        value = board['1']
+    elif board['3']==board['5'] and board['3']==board['7']:
+        value = board['3']
+    elif board['1']==board['4'] and board['1']==board['7']:
+        value = board['1']
+    elif board['2']==board['5'] and board['2']==board['8']:
+        value = board['2']
+    elif board['3']==board['6'] and board['3']==board['9']:
+        value = board['3']
+    elif count == 9:
+        value = 'tie'
+    return(value)
+
+def threaded(c):
+    print('you are player X')
+    a = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    print('To make a move enter any number from 1-9')
+    print(a)
+    while True:
+        print('Enter next move')
+        my_move(c)
+        if count>=5:
+            res = check_win()
+            if res== 'X' or res == 'O' or res == 'tie':
+                if res!= 'tie':
+                    print('player'+res+'have won the game')
+                    break
+                else:
+                    print('match has been tied')
+                    break
+        print('Waiting for other player to move')
+        others_move(c)
+        if count>=5:
+            res = check_win()
+            if res== 'X' or res == 'O' or res == 'tie' :
+                if res!= 'tie':
+                    print('player'+res+'have won the game')
+                    break
+                else:
+                    print('match has been tied')
+                    break  
+    c.close()
+
+if __name__ == "__main__":
+    s = socket.socket()
+    host = "192.168.137.1"
+    port = 10000
+    s.connect((host,port))
+    t = threading.Thread(target=threaded,args=(s,))
+    t.start()
