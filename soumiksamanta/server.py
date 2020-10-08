@@ -32,7 +32,9 @@ def accept_connections():
     while True:
         connection, address = SERVER.accept()
         print("[NEW Connection] Connection established with {} on port {}".format(address[0], address[1]))
+        THREAD_LOCK.acquire()
         threading.Thread(target=handle_client, args=(connection, address)).start()
+        THREAD_LOCK.release()
 
 def handle_client(conn, addr):
     incoming_msg = conn.recv(BUFF_SIZE)
@@ -40,13 +42,11 @@ def handle_client(conn, addr):
     
     if incoming_msg is not '':
         conn.send(bytes('Congrats!! You are now connected to the server...\nYou sent : ' + incoming_msg, 'utf-8'))
-        print(f'Message from Client {addr[0]}:{addr[1]} > ', incoming_msg)
-        THREAD_LOCK.acquire()
+        print(f'Message from Client {addr[0]}:{addr[1]} > ', incoming_msg)        
         while True:
             incoming_msg = conn.recv(BUFF_SIZE)
             incoming_msg = incoming_msg.decode('utf-8')
-            if incoming_msg is '':
-                THREAD_LOCK.release()
+            if incoming_msg is '':                
                 break
             else:
                 conn.send(bytes('You sent : ' + incoming_msg, 'utf-8'))
