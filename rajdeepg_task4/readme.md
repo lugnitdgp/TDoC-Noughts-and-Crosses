@@ -1,4 +1,4 @@
-# Make sure you have pygame installed . Else run ```pip install pygame``` in your terminal
+**Make sure you have pygame installed . Else run ```pip install pygame``` in your terminal**
 
 Open ```server.bat``` and ```client.bat``` and play the game. 
 Else open your terminal and run 
