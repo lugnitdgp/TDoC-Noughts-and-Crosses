@@ -85,7 +85,7 @@ while run:
                     print(f'Player {res} win.')
                 else:
                     print('Game over!')
-                grid.update(surface, header)
+                grid.update(surface, header, res)
                 time.sleep(2)
 
     pygame.display.update()
