@@ -59,7 +59,6 @@ while True:
 
 while client.SOCK:
     if(game.id==1):
-        # print('lll')
         p1_index = game.p1_move()
         print(f'[PLAYER 1 PLAYED]: {p1_index}')
         game.display_board()

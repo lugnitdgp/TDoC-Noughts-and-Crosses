@@ -19,11 +19,13 @@ class Server:
     
     def create_rooms(self, client):
         if client.ROOM in self.ROOMS.keys():
-            print('CLient added')
+            print(f'Client added to {client.ROOM}')
             self.ROOMS[client.ROOM].append(client)
         else:
-            print('Room Created')
+            print(f'Room {client.ROOM} Created')
             self.ROOMS[client.ROOM] = [client]
+
+        print(f'[ACTIVE MEMBERS in {client.ROOM}]: {len(self.ROOMS[client.ROOM])}')
 
     def init(self):
         self.SOCK.bind(self.ADDR)
@@ -42,7 +44,7 @@ class Server:
         return data
         
     def send_resp(self, conn, RESPONSE, FORMAT='utf-8'):
-        print(f'[RESPONSE GIVEN by {self.ADDR}] : \t{RESPONSE}')
+        # print(f'[RESPONSE GIVEN by {self.ADDR}] : \t{RESPONSE}')
         conn.send(bytes(RESPONSE, FORMAT))
 
     def handle_client(self, client):
@@ -52,7 +54,7 @@ class Server:
                 print(f'[CLIENT LEFT] Client {client.ADDR} left room')
                 break
             
-            print(f'Len: {len(self.ROOMS[client.ROOM])}')
+            # print(f'Len: {len(self.ROOMS[client.ROOM])}')
             for obj in self.ROOMS[client.ROOM]:
                 if obj.ID != client.ID:
                     self.send_resp(obj.SOCK, client_msg)

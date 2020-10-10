@@ -26,7 +26,9 @@ class Client:
         
     def recv_resp(self, CHUNKS=1024, FORMAT='utf-8'):
         data = self.SOCK.recv(CHUNKS).decode(FORMAT)
-        print(f'\b[RESPONSE FROM {self.ADDR}] : {data}')
+        if data=='FULL SHUTDOWN':
+            sys.exit(0)
+        print(f'\b\b[RESPONSE FROM {self.ADDR}] : {data}\n> ', end="")
         return data
 
     def assign_room(self, room_id):
