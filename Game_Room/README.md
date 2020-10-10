@@ -63,7 +63,7 @@ For the person O it will change a bit
 4. display board
 
 
-For a detailed video explanation I made a video on this: https://drive.google.com/drive/folders/10i_KUy-7fK7Q_3g2B_CJgCBsy8j4YxeK?usp=sharing
+I made a video on this where I explained the working and showed how the script works: https://drive.google.com/drive/folders/10i_KUy-7fK7Q_3g2B_CJgCBsy8j4YxeK?usp=sharing
 
 
 
