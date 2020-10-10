@@ -51,9 +51,7 @@ def handle_client(conn, addr):
     peer_conn = None
     connected_to_peer = False
 
-    if incoming_msg == 'CONNECT':
-        conn.send(bytes('Congrats!! You are now connected to the server!\nWaiting for an opponent...', 'utf-8'))      
-        
+    if incoming_msg == 'CONNECT':        
         while True:
             THREAD_LOCK.acquire()
             if not connected_to_peer:
@@ -80,8 +78,14 @@ def handle_client(conn, addr):
                     peer_conn = CLIENT_CONNECTIONS[peer_index]
                     connected_to_peer = True
             THREAD_LOCK.release()
-
-            self_move = conn.recv(BUFF_SIZE)
+            try:
+                self_move = conn.recv(BUFF_SIZE)
+            except ConnectionResetError:
+                try:
+                    peer_conn.send(bytes('QUIT', 'utf-8'))
+                except OSError:
+                    pass
+                break
             if not self_move:
                 try:
                     peer_conn.send(bytes('QUIT', 'utf-8'))
