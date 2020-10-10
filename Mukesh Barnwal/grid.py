@@ -135,11 +135,12 @@ class Grid:
         textRect.center = ( (x+(w/2)), (y+(h/2)) )
         surface.blit(textSurf, textRect)
 
-    def update(self, surface,header):
+    def update(self, surface,header, res):
         surface.fill((0,0,0))
         self.draw_line(surface)
         self.draw_sign(surface)
         self.write_text(header, 235, 25, surface, 25)
-        x1, y1, x2, y2 = self.res1[1], self.res1[0], self.res2[1], self.res2[0]
-        pygame.draw.line(surface, (200,161,219), (x1*150 + 85, y1*150 + 135), (x2*150 + 85, y2*150 + 135), 7)
+        if res is Not None:
+            x1, y1, x2, y2 = self.res1[1], self.res1[0], self.res2[1], self.res2[0]
+            pygame.draw.line(surface, (200,161,219), (x1*150 + 85, y1*150 + 135), (x2*150 + 85, y2*150 + 135), 7)
         pygame.display.update()
