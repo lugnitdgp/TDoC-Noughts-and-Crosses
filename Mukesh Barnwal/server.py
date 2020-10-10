@@ -35,9 +35,10 @@ listening = 1
 
 
 def connect_with_client():
-    global connected, conn, addr    
+    global connected, conn, addr, turn    
     conn, addr = s.accept()
     connected = True
+    turn = 0
     print(f'[CONNECTED] connected with {addr}')
     recv_msg()
 
