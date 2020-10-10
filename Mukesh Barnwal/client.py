@@ -1,16 +1,54 @@
-import socket                   # Import socket module
+import socket        
+import threading
+from game import game
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)       
+HEADER = 64
+FORMAT = 'utf-8'
 
-s.connect((socket.gethostbyname(socket.gethostname()), 50000))
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)             
+HOST = socket.gethostbyname(socket.gethostname())
+PORT = 50001
+s.bind((HOST, PORT))   
 
-while True:
-    msg = input()
-    s.sendall(bytes(str(len(msg)), 'utf-8'))
-    if(msg==''):
+game = game()
+choice = ['0', 'X']
+turn = 0
+
+print('||--------------You are The Player X--------------||', end='\n\n')
+print('To make a move, enter a number from 1-9')
+for x in range(1,10):
+    print(x, end=' ')
+    if x%3==0:
+        print('')
+
+for i in range(9):
+    x=0
+    if turn==0:
+        print('Waiting for other player to move :')
+        x = s.recv(64).decode(FORMAT)
+    else:
+        print('enter the next move :', end=' ')
+        x = input()
+        s.sendto(x.encode(FORMAT), (HOST, 50000))
+    
+    game.put(int(x), choice[turn])
+    res = game.check()
+    game.print_board()
+
+    if res is not None:
+        if turn==0:
+            print('Player 0 wins.')
+        else:
+            print('You wins.')
         break
-    s.send(msg.encode('utf-8'))
-    sent = s.recv(1024).decode('utf-8')
-    print(f"Server response : {sent}")
-s.close()
-print('connection closed')
+    if i==8:
+        print('Match Draw.')
+    
+    turn ^= 1
+
+
+
+    
+
+        
+
