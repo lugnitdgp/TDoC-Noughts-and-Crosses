@@ -65,10 +65,10 @@ def checkWin(boardMatrix):
         res = boardMatrix[0][0]
         pg.draw.line(screen, red, (0, (0+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), (WINDOW_WIDTH, (0+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), 4)
     if boardMatrix[1][0] == boardMatrix[1][1] and boardMatrix[1][0] == boardMatrix[1][2] and boardMatrix[1][0] != -1:
-        res = boardMatrix[0][0]
+        res = boardMatrix[1][0]
         pg.draw.line(screen, red, (0, (1+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), (WINDOW_WIDTH, (1+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), 4)
     if boardMatrix[2][0] == boardMatrix[2][1] and boardMatrix[2][0] == boardMatrix[2][2] and boardMatrix[2][0] != -1:
-        res = boardMatrix[0][0]
+        res = boardMatrix[2][0]
         pg.draw.line(screen, red, (0, (2+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), (WINDOW_WIDTH, (2+1)*WINDOW_HEIGHT/3 - WINDOW_HEIGHT/6 + 40), 4)
 
     # check columns
@@ -76,10 +76,10 @@ def checkWin(boardMatrix):
         res = boardMatrix[0][0]
         pg.draw.line(screen, red, ((0+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, 0 + 40), ((0+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, WINDOW_HEIGHT + 40), 4)
     if boardMatrix[0][1] == boardMatrix[1][1] and boardMatrix[0][1] == boardMatrix[2][1] and boardMatrix[0][1] != -1:
-        res = boardMatrix[0][0]
+        res = boardMatrix[0][1]
         pg.draw.line(screen, red, ((1+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, 0 + 40), ((1+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, WINDOW_HEIGHT + 40), 4)
     if boardMatrix[0][2] == boardMatrix[1][2] and boardMatrix[0][2] == boardMatrix[2][2] and boardMatrix[0][2] != -1:
-        res = boardMatrix[0][0]
+        res = boardMatrix[0][2]
         pg.draw.line(screen, red, ((2+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, 0 + 40), ((2+1)*WINDOW_WIDTH/3-WINDOW_WIDTH/6, WINDOW_HEIGHT + 40), 4)
 
     # check diagonals
@@ -87,7 +87,7 @@ def checkWin(boardMatrix):
         res = boardMatrix[0][0]
         pg.draw.line (screen, (250, 70, 70), (50, 50 + 40), (350, 350 + 40), 4)
     if boardMatrix[0][2] == boardMatrix[1][1] and boardMatrix[0][2] == boardMatrix[2][0] and boardMatrix[0][2] != -1:
-        res = boardMatrix[0][0]
+        res = boardMatrix[0][2]
         pg.draw.line (screen, (250, 70, 70), (350, 50 + 40), (50, 350 + 40), 4)
 
     print(res)
@@ -186,6 +186,7 @@ def communicate():
                 boardMatrix[(int(peer_move)-1)//3][(int(peer_move)-1)%3] = 1
                 draw((int(peer_move)-1)//3+1, (int(peer_move)-1)%3+1, 'X')            
             print('[GAME OVER]')
+            print(boardMatrix)
             res = checkWin(boardMatrix)
             if res == -1:
                 print('----DRAW----')
