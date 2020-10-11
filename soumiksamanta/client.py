@@ -4,13 +4,13 @@ import sys
 import time
 import socket
 import pygame as pg
-from pygame.locals import *
 
 WINDOW_WIDTH = 400
 WINDOW_HEIGHT = 400
 white = (246, 246, 246)
 black = (37, 37, 38)
-red = (255, 0, 0)
+line_color = (22, 22, 22)
+red = (250, 70, 70)
 fps = 30
 
 HOST = socket.gethostname() 
@@ -30,7 +30,7 @@ def connect_client():
     global CLIENT
     try:
         CLIENT.connect((HOST, PORT))
-    except:
+    except ConnectionRefusedError:
         print("Connection Error!!  Retrying...")
         time.sleep(2)
         connect_client()
@@ -90,6 +90,8 @@ def checkWin(boardMatrix):
         res = boardMatrix[0][0]
         pg.draw.line (screen, (250, 70, 70), (350, 50 + 40), (50, 350 + 40), 4)
 
+    print(res)
+
     #checkDraw
     if res == None and not (any(-1 in row for row in boardMatrix)):
         return -1
@@ -121,7 +123,7 @@ def getClickIndex():
     return None, None
 
 def communicate():
-    global CLIENT
+    global CLIENT, PORT
     CLIENT.send(bytes('CONNECT', 'utf-8'))
     
     player_msg = CLIENT.recv(BUFF_SIZE)
@@ -189,10 +191,22 @@ def communicate():
                 print('----DRAW----')
                 drawStatus("DRAW")
                 time.sleep(2)
+                CLIENT.close()
+                if drawPlayAgain():
+                    create_client()
+                    connect_client()
+                    initiate_game()
+                    communicate()
                 break
             print('Oops!! You Lost!!')
             drawStatus('Oops!! You Lost!!')
             time.sleep(2)
+            CLIENT.close()
+            if drawPlayAgain():
+                create_client()
+                connect_client()
+                initiate_game()
+                communicate()
             break
         elif peer_move == 'QUIT':
             drawStatus('Lost connection with peer!! Quitting...')
@@ -241,7 +255,13 @@ def communicate():
             time.sleep(0.5)
             CLIENT.send(bytes(self_move, 'utf-8'))
             drawStatus("DRAW")
-            time.sleep(2)            
+            time.sleep(2)
+            CLIENT.close()
+            if drawPlayAgain():
+                create_client()
+                connect_client()
+                initiate_game()
+                communicate()
             break
         else:
             CLIENT.send(bytes('[GAME OVER]', 'utf-8'))
@@ -249,7 +269,13 @@ def communicate():
             print('Congrats!! You Win!!')
             drawStatus('Congrats!! You Win!!')
             time.sleep(2)
-            CLIENT.send(bytes(self_move, 'utf-8'))            
+            CLIENT.send(bytes(self_move, 'utf-8'))
+            CLIENT.close()
+            if drawPlayAgain():
+                create_client()
+                connect_client()
+                initiate_game()
+                communicate()
             break
 
 def initiate_game():
@@ -260,11 +286,11 @@ def initiate_game():
     screen.fill(white)
 
     # vertical lines
-    pg.draw.line(screen, black, (WINDOW_WIDTH/3, 40), (WINDOW_WIDTH/3, WINDOW_HEIGHT+40), 7)
-    pg.draw.line(screen, black, (WINDOW_WIDTH/3*2, 40), (WINDOW_WIDTH/3*2, WINDOW_HEIGHT+40), 7)
+    pg.draw.line(screen, line_color, (WINDOW_WIDTH/3, 40), (WINDOW_WIDTH/3, WINDOW_HEIGHT+40), 7)
+    pg.draw.line(screen, line_color, (WINDOW_WIDTH/3*2, 40), (WINDOW_WIDTH/3*2, WINDOW_HEIGHT+40), 7)
     # horizontal lines
-    pg.draw.line(screen, black, (0, WINDOW_WIDTH/3+40), (WINDOW_WIDTH, WINDOW_HEIGHT/3+40), 7)
-    pg.draw.line(screen, black, (0, WINDOW_WIDTH/3*2+40), (WINDOW_WIDTH, WINDOW_HEIGHT/3*2+40), 7)
+    pg.draw.line(screen, line_color, (0, WINDOW_WIDTH/3+40), (WINDOW_WIDTH, WINDOW_HEIGHT/3+40), 7)
+    pg.draw.line(screen, line_color, (0, WINDOW_WIDTH/3*2+40), (WINDOW_WIDTH, WINDOW_HEIGHT/3*2+40), 7)
     
     drawTop("Welcome aboard")
     drawStatus("Waiting for an opponent...")
@@ -286,13 +312,49 @@ def drawTop(message):
     screen.blit(text, text_rect)
     pg.display.update()
 
+def drawPlayAgain():
+    color_light = (170, 170, 170)
+    color_dark = (100, 100, 100)
+
+    font = pg.font.SysFont('Corbel', 25)
+    text = font.render("Play Again", 1, white)
+
+    playAgain = False
+
+    waiting = True
+    while waiting:
+        screen.fill(black)
+        cursor_pos = pg.mouse.get_pos()
+
+        for event in pg.event.get(): 
+            if event.type == pg.QUIT: 
+                pg.quit() 
+                sys.exit() 
+            elif event.type is pg.MOUSEBUTTONDOWN:                
+                if WINDOW_WIDTH/2-100 <= cursor_pos[0] <= WINDOW_WIDTH/2+100 and (WINDOW_HEIGHT+140)/2-25 <= cursor_pos[1] <= (WINDOW_HEIGHT+140)/2+25:
+                    playAgain = True
+                    waiting = False
+                    break
+        if WINDOW_WIDTH/2-100 <= cursor_pos[0] <= WINDOW_WIDTH/2+100 and (WINDOW_HEIGHT+140)/2-25 <= cursor_pos[1] <= (WINDOW_HEIGHT+140)/2+25:
+            pg.draw.rect(screen, color_light, [WINDOW_WIDTH/2-100, (WINDOW_HEIGHT+140)/2-25, 200, 50])
+        else:
+            pg.draw.rect(screen, color_dark, [WINDOW_WIDTH/2-100, (WINDOW_HEIGHT+140)/2-25, 200, 50])
+
+        text_rect = text.get_rect(center=(WINDOW_WIDTH/2, (WINDOW_HEIGHT+140)/2))
+        screen.blit(text, text_rect)
+
+        pg.display.update() 
+        CLOCK.tick(fps)
+
+    return playAgain
+
 if __name__ == '__main__':
     create_client()
     connect_client()
     pg.init()
     
     CLOCK = pg.time.Clock()
-    screen = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 140), 0, fps)
+    screen = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 100 + 40), 0, fps)
     pg.display.set_caption("Tic-Tac-Toe") 
 
     initiating_window = pg.image.load("cover.png") 
@@ -306,7 +368,7 @@ if __name__ == '__main__':
     initiate_game()
 
     communicate()
-    CLIENT.close()
+    # CLIENT.close()
     pg.quit() 
     sys.exit()
     
