@@ -2,7 +2,7 @@
 
 Making A CLI group chat interface with addded Encryption
 
-#threading
+# threading
 
 The threading module provided with Python includes a simple-to-implement locking mechanism that allows you to synchronize threads.
 
