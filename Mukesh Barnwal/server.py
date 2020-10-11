@@ -33,7 +33,7 @@ username, opponent = '', ''
 listening, username_take_time = 1, 1
 win, lose = 0, 0
 
-def listening():
+def listen_on():
     s.listen(5)
     print(f'[LISTENING] server is listening on {HOST}')
 
@@ -104,7 +104,7 @@ while run:
             enter = grid.input_box(surface, username, inputRect)
             if enter=='ENTER'and len(username)>=1:
                 username_take_time -= 1
-                listening()
+                listen_on()
         else:
             grid.write_text(surface, ('Wait '+username), 235, 360, 20)
             if listening==1:
